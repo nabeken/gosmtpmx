@@ -9,7 +9,7 @@ import (
 	"time"
 )
 
-func SendMailVia(mx string, a smtp.Auth, from string, to []string, msg[]byte) error {
+func SendMailVia(mx string, a smtp.Auth, from string, to []string, msg []byte) error {
 	list, err := LookupMX(mx)
 	if err != nil {
 		return err
@@ -22,11 +22,11 @@ func SendMailVia(mx string, a smtp.Auth, from string, to []string, msg[]byte) er
 				return err
 			}
 			for _, addr := range addrs {
-				 serr := smtp.SendMail(addr.String(), a, from, to, msg)
-				 if serr != nil {
-					 continue
-				 }
-				 return nil
+				serr := smtp.SendMail(addr.String(), a, from, to, msg)
+				if serr != nil {
+					continue
+				}
+				return nil
 			}
 		}
 	}
@@ -49,12 +49,12 @@ func NewMXList(rrs []*net.MX) MXlist {
 }
 
 // Shuffle shuffles MX RR between same preference in MXlist
-func (list MXlist) Shuffle() {
+func (list *MXlist) Shuffle() {
 	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	// stretch...
 	r.Perm(1000)
-	for pref := range list {
-		rrs := list[pref]
+	for pref := range *list {
+		rrs := (*list)[pref]
 		for i, p := range r.Perm(len(*rrs)) {
 			cur := (*rrs)[i]
 			(*rrs)[i] = (*rrs)[p]
@@ -64,9 +64,9 @@ func (list MXlist) Shuffle() {
 }
 
 // Keys returns keys sorted by preference
-func (list MXlist) Keys() []uint16 {
+func (list *MXlist) Keys() []uint16 {
 	prefs := sort.IntSlice{}
-	for pref := range list {
+	for pref := range *list {
 		prefs = append(prefs, int(pref))
 	}
 	prefs.Sort()
