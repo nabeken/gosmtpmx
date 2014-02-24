@@ -4,4 +4,5 @@ go:
   - 1.2
 
 script:
+  - go get code.google.com/p/go.tools/cmd/cover
   - make test
