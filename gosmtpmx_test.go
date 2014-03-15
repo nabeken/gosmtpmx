@@ -307,7 +307,7 @@ func TestDeliver_NoAlternative(t *testing.T) {
 	}
 }
 
-func Test_New(t *testing.T) {
+func TestNew(t *testing.T) {
 	if !*integrate {
 		t.Skip("Actual DNS lookups are disabled. Add -integrate to perform lookups.")
 	}
@@ -315,6 +315,11 @@ func Test_New(t *testing.T) {
 	mx := MX{
 		host: "gosmtpmxtest.aws.tknetworks.org",
 		port: "10025",
+	}
+
+	err := NewTestServer()
+	if err != nil {
+		t.Fatal(err)
 	}
 
 	c := New(mx)
