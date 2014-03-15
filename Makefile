@@ -1,3 +1,3 @@
 test:
-	go test -coverprofile=coverage.out
+	go test -integrate -v -coverprofile=coverage.out
 	go tool cover -html=coverage.out
